@@ -1,8 +1,6 @@
 const { Console } = require('../models/consoles.model');
-
+const {Game} = require('../models/games.model')
 const { catchAsync } = require('../utils/catchAsync.util');
-const { AppError } = require('../utils/appError.util');
-const { restart } = require('nodemon');
 
 const createConsole = catchAsync(async(req, res, next) => {
     const { name, company } = req.body;
@@ -16,7 +14,10 @@ const createConsole = catchAsync(async(req, res, next) => {
 });
 
 const getAllConsoles = catchAsync(async(req, res, next) => {
-    const consoles = await Console.findAll({where: {status: 'active'}});
+    const consoles = await Console.findAll({
+        where: {status: 'active'},
+        include: {model: Game}
+    });
     res.status(200).json({
         status: 'success',
         data: {consoles}
